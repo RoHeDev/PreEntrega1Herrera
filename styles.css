@@ -1,0 +1,38 @@
+body {
+  background-color: #3b0000;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  background-color: #ff0000;
+  padding: 20px;
+  text-align: center;
+}
+
+#loginButton {
+  background-color: #ff0000;
+  color: #ffffff;
+  font-size: 20px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.card {
+  border: 1px solid #000000;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #8f8989;
+  color: #fff;
+}
+
+.nidal {
+  color: gold;
+}
+
+#trabajosRealizados {
+  color: goldenrod;
+}
