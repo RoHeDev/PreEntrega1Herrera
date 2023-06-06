@@ -36,9 +36,6 @@ function saludar() {
     document.getElementById("contratar4").addEventListener("click", () => {
       nidal("reconocimiento");
     });
-
-    // Cargar los trabajos realizados solo si coinciden con los datos de inicio de sesión
-    cargarTrabajosRealizados(nombre, edad);
   } else {
     let mensaje1 = `${nombre} no tiene permitido estar aquí. Por favor salga de aquí.`;
     alert(mensaje1);
@@ -79,17 +76,10 @@ function guardarTrabajosRealizados() {
 }
 
 // Función para cargar los trabajos realizados desde el almacenamiento local
-function cargarTrabajosRealizados(nombre, edad) {
+function cargarTrabajosRealizados() {
   const trabajosGuardados = localStorage.getItem("trabajosRealizados");
   if (trabajosGuardados) {
     trabajosRealizados = JSON.parse(trabajosGuardados);
-
-    // Filtrar los trabajos realizados para mostrar solo los que coinciden con los datos de inicio de sesión
-    trabajosRealizados = trabajosRealizados.filter((trabajo) => {
-      return trabajo.nombre === nombre && trabajo.edad === edad;
-    });
-
-    mostrarTrabajosRealizados();
   }
 }
 
@@ -113,10 +103,7 @@ function nidal(trabajo) {
         `El trabajo "${trabajo}" ha sido contratado por ${precioTrabajo}`
       );
 
-      // Agregar los datos de inicio de sesión junto con el trabajo realizado
       trabajosRealizados.push({
-        nombre: nombre,
-        edad: edad,
         trabajo: trabajo,
         precio: precioTrabajo,
       });
@@ -135,3 +122,6 @@ function nidal(trabajo) {
 
 // Al cargar la página, llamar a la función para cargar los trabajos realizados desde el almacenamiento local
 cargarTrabajosRealizados();
+
+// Mostrar los trabajos realizados
+mostrarTrabajosRealizados();
