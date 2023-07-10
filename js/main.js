@@ -8,37 +8,47 @@ const preciosTrabajos = {
 let trabajosRealizados = [];
 
 function saludar() {
-  let nombre = prompt("Ingrese su nombre");
-  let edad = parseInt(prompt("Ingrese su edad"));
+  let nombre = document.getElementById("nombreInput").value;
+  let edad = parseInt(document.getElementById("edadInput").value);
 
   if (edad > 17) {
     let mensaje = `Bienvenido ${nombre} a Nidal`;
-    alert(mensaje);
-    console.log(`Bienvenido a la Consola ${nombre}. Proceda con cuidado.`);
-    document.getElementById("loginButton").style.display = "none"; // Oculta el botón de login
 
-    // Evento boton 0
-    document.getElementById("contratar1").addEventListener("click", () => {
-      nidal("escolta");
-    });
+    // Mostrar mensaje de bienvenida con swal.fire
+    swal
+      .fire({
+        title: mensaje,
+        icon: "success",
+      })
+      .then(() => {
+        console.log(`Bienvenido a la Consola ${nombre}. Proceda con cuidado.`);
+        document.getElementById("loginButton").style.display = "none"; // Oculta el botón de login
 
-    // Evento boton 1
-    document.getElementById("contratar2").addEventListener("click", () => {
-      nidal("caceria");
-    });
+        // Eventos de los botones
+        document.getElementById("contratar1").addEventListener("click", () => {
+          nidal("escolta");
+        });
 
-    // Evento boton 2
-    document.getElementById("contratar3").addEventListener("click", () => {
-      nidal("busqueda");
-    });
+        document.getElementById("contratar2").addEventListener("click", () => {
+          nidal("caceria");
+        });
 
-    // Evento boton 3
-    document.getElementById("contratar4").addEventListener("click", () => {
-      nidal("reconocimiento");
-    });
+        document.getElementById("contratar3").addEventListener("click", () => {
+          nidal("busqueda");
+        });
+
+        document.getElementById("contratar4").addEventListener("click", () => {
+          nidal("reconocimiento");
+        });
+      });
   } else {
     let mensaje1 = `${nombre} no tiene permitido estar aquí. Por favor salga de aquí.`;
-    alert(mensaje1);
+
+    // Mostrar mensaje de no permitido con swal.fire
+    swal.fire({
+      title: mensaje1,
+      icon: "error",
+    });
   }
 }
 
@@ -87,41 +97,68 @@ function nidal(trabajo) {
   let precioTrabajo = preciosTrabajos[trabajo];
 
   if (trabajo && precioTrabajo) {
-    let codigoDescuento = prompt("Ingrese el código de descuento (opcional)");
+    let codigoDescuento = document.getElementById("codigoDescuentoInput").value;
 
     if (codigoDescuento === "fantoche") {
       precioTrabajo -= precioTrabajo * 0.15; // descuentito del 15%
     }
 
-    let confirmacion = confirm(
-      `El precio del trabajo "${trabajo}" es: $${precioTrabajo}. ¿Desea confirmar la contratación?`
-    );
+    // Crear una promesa para el proceso de contratación
+    const confirmarContratacion = new Promise((resolve, reject) => {
+      swal
+        .fire({
+          title: `El precio del trabajo "${trabajo}" es: $${precioTrabajo}`,
+          icon: "info",
+          showCancelButton: true,
+          confirmButtonText: "Confirmar",
+          cancelButtonText: "Cancelar",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            // Trabajo contratado
+            swal.fire("¡El trabajo ha sido contratado!", "", "success");
 
-    if (confirmacion) {
-      alert(`¡El trabajo "${trabajo}" ha sido contratado!`);
-      console.log(
-        `El trabajo "${trabajo}" ha sido contratado por ${precioTrabajo}`
-      );
+            trabajosRealizados.push({
+              trabajo: trabajo,
+              precio: precioTrabajo,
+            });
 
-      trabajosRealizados.push({
-        trabajo: trabajo,
-        precio: precioTrabajo,
-      });
+            mostrarTrabajosRealizados();
+            guardarTrabajosRealizados();
 
-      mostrarTrabajosRealizados();
+            // Realizar solicitud fetch para obtener la imagen de un gato con el mensaje "hello"
+            fetch("https://cataas.com/cat/says/Gracias%20por%20el%20Trabajo")
+              .then((response) => response.blob())
+              .then((blob) => {
+                const imageUrl = URL.createObjectURL(blob);
 
-      // Guardar los trabajos realizados en el almacenamiento local
-      guardarTrabajosRealizados();
-    } else {
-      alert("La contratación ha sido cancelada.");
-    }
+                // Mostrar imagen en lugar de swal.fire
+                const image = document.createElement("img");
+                image.src = imageUrl;
+                image.style.maxWidth = "100%";
+                document
+                  .getElementById("contratacionResultado")
+                  .appendChild(image);
+              })
+              .catch((error) => {
+                console.log("Error al obtener la imagen del gato:", error);
+              });
+
+            resolve(); // Resuelve la promesa
+          } else {
+            // Contratación cancelada
+            swal.fire("La contratación ha sido cancelada.", "", "info");
+            reject(); // Rechaza la promesa
+          }
+        });
+    });
   } else {
     console.log("Trabajo inválido");
   }
 }
 
-// Al cargar la página, llamar a la función para cargar los trabajos realizados desde el almacenamiento local
+// La función para cargar los trabajos realizados desde el almacenamiento local
 cargarTrabajosRealizados();
 
-// Mostrar los trabajos realizados
+//Trabajos realizados
 mostrarTrabajosRealizados();
