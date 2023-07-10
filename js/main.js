@@ -126,7 +126,7 @@ function nidal(trabajo) {
             mostrarTrabajosRealizados();
             guardarTrabajosRealizados();
 
-            // Realizar solicitud fetch para obtener la imagen de un gato con el mensaje "hello"
+            // Solicitud fetch para la imagen de un Trabajador
             fetch("https://cataas.com/cat/says/Gracias%20por%20el%20Trabajo")
               .then((response) => response.blob())
               .then((blob) => {
@@ -146,7 +146,7 @@ function nidal(trabajo) {
 
             resolve(); // Resuelve la promesa
           } else {
-            // Contratación cancelada
+            // Contratación cancelada no hay gato
             swal.fire("La contratación ha sido cancelada.", "", "info");
             reject(); // Rechaza la promesa
           }
